@@ -1,0 +1,30 @@
+# Etap 1: Budowa aplikacji
+FROM node:18-alpine AS builder
+
+# Ustawienie katalogu roboczego
+WORKDIR /app
+
+# Kopiowanie plików aplikacji
+COPY index.js ./
+
+# Definicja zmiennej ARG dla wersji
+ARG VERSION=1.0.0
+
+# Ustawienie zmiennej środowiskowej
+ENV VERSION=${VERSION}
+
+# Uruchomienie aplikacji i wygenerowanie strony HTML
+RUN node index.js
+
+# Etap 2: Serwowanie aplikacji za pomocą Nginx
+FROM nginx:alpine
+
+# Kopiowanie wygenerowanego pliku HTML do katalogu Nginx
+COPY --from=builder /app/index.html /usr/share/nginx/html/index.html
+
+# Konfiguracja HEALTHCHECK
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
+    CMD wget --spider -q http://localhost || exit 1
+
+# Eksponowanie portu 80
+EXPOSE 80
