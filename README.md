@@ -2,7 +2,7 @@
 
 `docker build --build-arg VERSION=2.3.4 -f .\Dockerfile_Scratch -t my-server .`
 
-# Uruchomienie obrazu
+# Uruchomienie kontenera
 
 `docker run --rm -p 8080:80 my-server`
 
